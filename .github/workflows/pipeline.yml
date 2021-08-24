@@ -16,24 +16,25 @@ jobs:
     strategy:
       matrix:
         node-version: [12.x, 14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        mongodb-version: ['4.0', '4.2', '4.4']
 
     steps:
+    - name: Git checkout
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.6.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with: 
         start: npm run start:test
         wait-on: http://localhost:3030
-
-    # - name: Cypress run
-    #   uses: cypress-io/github-action@v1
-    #   with:
-    #       build: npm run build
-    #       start: npm start
-    #       wait-on: http://localhost:3030
